@@ -1,0 +1,166 @@
+---
+title: Composite Launch Flows
+---
+
+import { Callout } from 'nextra/components'
+import { LaunchFlowDemo } from '../../../components/demos/launch-flow-demo'
+
+# Composite Launch Flows
+
+FeatureDrop is strongest when components are orchestrated as a sequence, not used in isolation. A single feature launch can span banner, tour, checklist, and feedback in a coordinated flow.
+
+## Typical launch sequence
+
+| Stage | Component | Goal | Interruption |
+| --- | --- | --- | --- |
+| Awareness | `<Banner>` | Announce change exists | Low |
+| Guidance | `<Tour>` / `<SpotlightChain>` | Teach the workflow | Medium |
+| Activation | `<Checklist>` | Drive completion | Medium |
+| Follow-up | `<FeedbackWidget>` / `<Survey>` | Measure quality | Low |
+
+## Coordination pattern
+
+Use callbacks to chain components explicitly. You control sequencing logic in app code instead of hidden SaaS automation rules.
+
+```tsx filename="LaunchFlow.tsx"
+import { useState } from 'react'
+import { Banner, Tour, Checklist, FeedbackWidget } from 'featuredrop/react'
+
+const tourSteps = [
+  { id: 'step-1', target: '#data-source', title: 'Connect', content: 'Link your database here.' },
+  { id: 'step-2', target: '#sync-btn', title: 'Sync', content: 'Click to start syncing.' },
+]
+
+const tasks = [
+  { id: 'connect', title: 'Connect data source', estimatedTime: '2m' },
+  { id: 'sync', title: 'Run first sync', estimatedTime: '1m' },
+  { id: 'verify', title: 'Verify data', estimatedTime: '3m' },
+]
+
+export function LaunchFlow() {
+  const [phase, setPhase] = useState<'banner' | 'tour' | 'checklist' | 'feedback'>('banner')
+
+  return (
+    <>
+      {/* Phase 1: Banner announces the feature */}
+      {phase === 'banner' && (
+        <Banner
+          featureId="data-sync"
+          position="inline"
+          onDismiss={() => setPhase('tour')}
+        />
+      )}
+
+      {/* Phase 2: Tour teaches the workflow */}
+      {phase === 'tour' && (
+        <Tour
+          id="data-sync-tour"
+          steps={tourSteps}
+          onComplete={() => setPhase('checklist')}
+          onSkip={() => setPhase('checklist')}
+        >
+          {({ isActive, step, startTour, nextStep, skipTour }) => (
+            <div>
+              {!isActive && <button onClick={startTour}>Start tour</button>}
+              {isActive && step && (
+                <div>
+                  <h4>{step.title}</h4>
+                  <p>{String(step.content)}</p>
+                  <button onClick={nextStep}>Next</button>
+                  <button onClick={skipTour}>Skip</button>
+                </div>
+              )}
+            </div>
+          )}
+        </Tour>
+      )}
+
+      {/* Phase 3: Checklist drives activation */}
+      {phase === 'checklist' && (
+        <Checklist
+          id="data-sync-checklist"
+          tasks={tasks}
+          position="inline"
+          onComplete={() => setPhase('feedback')}
+        />
+      )}
+
+      {/* Phase 4: Feedback collects signal */}
+      {phase === 'feedback' && (
+        <FeedbackWidget
+          featureId="data-sync"
+          onSubmit={async (payload) => {
+            console.log('Feedback:', payload)
+          }}
+        >
+          {({ isOpen, open, text, setText, submit }) => (
+            <div>
+              {!isOpen ? (
+                <button onClick={open}>How was the setup?</button>
+              ) : (
+                <div>
+                  <textarea value={text} onChange={(e) => setText(e.target.value)} />
+                  <button onClick={submit}>Send feedback</button>
+                </div>
+              )}
+            </div>
+          )}
+        </FeedbackWidget>
+      )}
+    </>
+  )
+}
+```
+
+## Throttling
+
+FeatureDrop's built-in throttler prevents multiple high-interruption surfaces from firing simultaneously. When a tour is active, new spotlights and modals queue until it completes.
+
+```tsx
+<FeatureDropProvider
+  manifest={manifest}
+  storage={storage}
+  throttle={{ maxConcurrent: 1, cooldownMs: 5000 }}
+>
+  {/* Only one tour/spotlight/modal visible at a time */}
+  <App />
+</FeatureDropProvider>
+```
+
+## Analytics across the flow
+
+Track the entire funnel by wiring analytics callbacks:
+
+```tsx
+<FeatureDropProvider
+  manifest={manifest}
+  storage={storage}
+  analytics={{
+    onFeatureImpression: (feature, surface) => {
+      track('feature_impression', { id: feature.id, surface })
+    },
+    onFeatureDismissed: (feature) => {
+      track('feature_dismissed', { id: feature.id })
+    }
+  }}
+>
+  <LaunchFlow />
+</FeatureDropProvider>
+```
+
+<Callout type="info">
+  Coordination is explicit by design. You control sequencing logic in app code instead of hidden SaaS automation rules. This makes flows testable, debuggable, and version-controlled.
+</Callout>
+
+## Interactive Demo
+
+<LaunchFlowDemo />
+
+## When to use launch flows
+
+- **Major feature launches** that need guided onboarding
+- **Pricing tier upgrades** where new capabilities should be highlighted
+- **Migration workflows** that require multiple steps
+- **Quarterly release roundups** combining changelog + tours
+
+For routine feature updates, a simple `<NewBadge>` or changelog entry is sufficient. Reserve multi-surface flows for launches where adoption directly impacts business metrics.

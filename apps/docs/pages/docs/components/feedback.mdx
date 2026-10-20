@@ -1,0 +1,50 @@
+---
+title: The Feedback Widget
+---
+
+import { Callout } from 'nextra/components'
+import { FeedbackDemo } from '../../../components/demos/feedback-demo'
+
+# The Feedback Widget
+
+`<FeedbackWidget>` collects contextual user feedback with optional category, emoji, screenshot, and rate limiting.
+
+## Usage
+
+```tsx filename="feedback-widget.tsx"
+import { FeedbackWidget } from 'featuredrop/react'
+
+<FeedbackWidget
+  featureId="new-analytics-dashboard"
+  categories={['bug', 'design', 'performance', 'feature-request']}
+  showEmoji
+  showScreenshot
+  rateLimit="1-per-feature"
+  onSubmit={async (payload) => {
+    await fetch('/api/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+  }}
+/>
+```
+
+## Key props
+
+| Prop | Type | Notes |
+| --- | --- | --- |
+| `onSubmit` | `(payload) => Promise<void> \| void` | Required handler |
+| `featureId` | `string` | Attach feedback to feature |
+| `categories` | `string[]` | Category options |
+| `rateLimit` | `'none' \| '1-per-feature' \| '1-per-session'` | Anti-spam guard |
+| `showScreenshot` | `boolean` | Screenshot capture support |
+| `showEmoji` | `boolean` | Emoji sentiment input |
+
+<Callout type="info">
+  Payload includes `url` and `timestamp` so backend triage can reproduce context faster.
+</Callout>
+
+## Interactive Demo
+
+<FeedbackDemo />

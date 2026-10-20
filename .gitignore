@@ -1,0 +1,72 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.next/
+apps/docs/public/r/
+
+# Coverage
+coverage/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.*
+
+# Turbo
+.turbo/
+
+# Internal docs (not published)
+docs-local/
+AGENTS.md
+agent.md
+CLAUDE.md
+claude.md
+
+# AI agent directories (catch-all for tool configs except .claude which is tracked)
+.claude/skills/
+.agent*/
+.codebuddy/
+.commandcode/
+.continue/
+.crush/
+.factory/
+.goose/
+.junie/
+.kilocode/
+.kiro/
+.kode/
+.ladle/
+.mcpjam/
+.mux/
+.neovate/
+.openhands/
+.pi/
+.pnpm-store/
+.pochi/
+.qoder/
+.qwen/
+.roo/
+.trae/
+.windsurf/
+.wrangler/
+.zencoder/
+skills/*
+!skills/featuredrop-setup/
+skills-lock.json
+
+# Debug
+*.log
+npm-debug.log*
+pnpm-debug.log*
+posthog-setup-report.md

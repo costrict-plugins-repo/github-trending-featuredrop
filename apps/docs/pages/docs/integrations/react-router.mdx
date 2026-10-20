@@ -1,0 +1,56 @@
+---
+title: React Router Integration
+---
+
+import { Callout } from 'nextra/components'
+
+# React Router Integration
+
+Mount `FeatureDropProvider` above route switching so state survives navigation.
+
+```tsx filename="src/main.tsx"
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { LocalStorageAdapter } from 'featuredrop'
+import { ChangelogWidget, FeatureDropProvider, Tour } from 'featuredrop/react'
+import { manifest } from './featuredrop.manifest'
+
+const tourSteps = [
+  { id: 'nav', target: '#main-nav', title: 'Navigation', content: 'Find updates in the left nav.' }
+]
+
+function AppShell() {
+  return (
+    <FeatureDropProvider
+      manifest={manifest}
+      storage={new LocalStorageAdapter({ prefix: 'featuredrop' })}
+      appVersion={__APP_VERSION__}
+    >
+      <ChangelogWidget />
+      <Tour id="first-session-tour" steps={tourSteps} />
+
+      <Routes>
+        <Route path="/" element={<DashboardPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
+      </Routes>
+    </FeatureDropProvider>
+  )
+}
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <BrowserRouter>
+    <AppShell />
+  </BrowserRouter>
+)
+```
+
+## Common mistakes
+
+- Mounting provider inside page components (state resets per route)
+- Recreating adapters every render
+- Mounting cross-route tours too low in the tree
+
+<Callout type="info">
+  Use one provider per app shell unless you intentionally need isolated state.
+</Callout>

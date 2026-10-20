@@ -1,0 +1,54 @@
+---
+title: Version Pinning
+---
+
+import { Callout } from 'nextra/components'
+
+# Version Pinning
+
+Version pinning prevents announcing functionality before the user has the code.
+
+## Manifest setup
+
+```ts filename="featuredrop.manifest.ts"
+import type { FeatureManifest } from 'featuredrop'
+
+export const manifest: FeatureManifest = [
+  {
+    id: 'new-dashboard',
+    label: 'Dashboard analytics refresh',
+    releasedAt: '2026-03-01T00:00:00Z',
+    showNewUntil: '2026-04-01T00:00:00Z',
+    version: {
+      introduced: '2.4.0',
+      showNewUntil: '2.6.0'
+    }
+  }
+]
+```
+
+## Provider setup
+
+```tsx filename="app/providers.tsx"
+import { FeatureDropProvider } from 'featuredrop/react'
+
+const appVersion = process.env.NEXT_PUBLIC_APP_VERSION ?? '0.0.0'
+
+<FeatureDropProvider manifest={manifest} storage={storage} appVersion={appVersion}>
+  {children}
+</FeatureDropProvider>
+```
+
+## Behavior
+
+| Client app version | `introduced: 2.4.0` | Result |
+| --- | --- | --- |
+| `2.3.9` | not met | Hidden |
+| `2.4.0` | met | Eligible |
+| `2.5.3` | met | Eligible |
+
+If `version.showNewUntil` is set, the entry stops being "new" once `appVersion >= showNewUntil`.
+
+<Callout type="warning">
+  Use valid semver (`x.y.z`). Invalid versions disable deterministic gating.
+</Callout>

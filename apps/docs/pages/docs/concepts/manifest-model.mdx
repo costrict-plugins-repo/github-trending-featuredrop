@@ -1,0 +1,64 @@
+---
+title: The Manifest Model
+---
+
+import { Callout, Steps } from 'nextra/components'
+
+# The Manifest Model
+
+FeatureDrop runs from one source of truth: `FeatureManifest`.
+
+A manifest is a typed array of entries checked at build/CI time and evaluated at runtime by `FeatureDropProvider`.
+
+## Example
+
+```ts filename="featuredrop.manifest.ts"
+import type { FeatureManifest } from 'featuredrop'
+
+export const manifest: FeatureManifest = [
+  {
+    id: 'dashboard-v2-announcement',
+    label: 'Dashboard v2 is live',
+    description: 'Live charts, exports, and faster filters.',
+    category: 'dashboard',
+    sidebarKey: '/dashboard',
+    releasedAt: '2026-03-01T00:00:00Z',
+    showNewUntil: '2026-04-01T00:00:00Z',
+    version: { introduced: '2.4.0', showNewUntil: '2.6.0' },
+    audience: { plan: ['pro', 'enterprise'], role: ['admin'] },
+    cta: { label: 'Read guide', url: '/docs/migration' }
+  },
+  {
+    id: 'dashboard-v2-tour',
+    label: 'Dashboard v2 guided tour',
+    releasedAt: '2026-03-01T00:00:00Z',
+    showNewUntil: '2026-04-15T00:00:00Z',
+    dependsOn: { seen: ['dashboard-v2-announcement'] },
+    trigger: { type: 'page', match: '/dashboard' }
+  }
+]
+```
+
+<Callout type="info">
+  Keep `id` immutable. New release = new `id`.
+</Callout>
+
+## Runtime Evaluation
+
+<Steps>
+### 1) Storage state
+Provider reads `watermark` and dismissed IDs from your adapter.
+
+### 2) Visibility gates
+Entry is checked against audience, version, feature flags, product scope, trigger rules, `publishAt`, `releasedAt`, and `showNewUntil`.
+
+### 3) Dependency gates
+If `dependsOn` is set, prerequisite seen/clicked/dismissed state must be satisfied.
+
+### 4) Context broadcast
+Eligible entries become `newFeatures`/`newCount` in React context.
+</Steps>
+
+## Type Safety
+
+By typing the file as `FeatureManifest`, your editor/CI catches invalid shapes and missing required fields early.

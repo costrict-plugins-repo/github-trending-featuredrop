@@ -1,0 +1,53 @@
+---
+title: The Survey Component
+---
+
+import { Callout } from 'nextra/components'
+import { SurveyDemo } from '../../../components/demos/survey-demo'
+
+# The Survey Component
+
+`<Survey>` collects structured user feedback (NPS/CSAT/CES/custom) with trigger rules and cooldowns.
+
+## Usage
+
+```tsx filename="nps-survey.tsx"
+import { Survey } from 'featuredrop/react'
+
+<Survey
+  id="post-launch-nps"
+  type="nps"
+  trigger="manual"
+  prompt="How likely are you to recommend FeatureDrop?"
+  onSubmit={async (payload) => {
+    await fetch('/api/surveys', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+  }}
+>
+  {({ show }) => (
+    <button onClick={() => show({ force: true })}>Open survey</button>
+  )}
+</Survey>
+```
+
+## Key props
+
+| Prop | Type | Notes |
+| --- | --- | --- |
+| `id` | `string` | Required survey id |
+| `type` | `'nps' \| 'csat' \| 'ces' \| 'custom'` | Survey scale |
+| `trigger` | `'auto' \| 'manual'` | Show mode |
+| `triggerRules` | `SurveyTriggerRules` | Page/usage/time/sample gating |
+| `questions` | `SurveyQuestion[]` | Optional custom questions |
+| `onSubmit` | `(payload) => Promise<void> \| void` | Required submit handler |
+
+<Callout type="tip">
+  Keep surveys short and tied to meaningful moments (post-feature use, not first page load).
+</Callout>
+
+## Interactive Demo
+
+<SurveyDemo />

@@ -1,0 +1,60 @@
+---
+title: Security Checks
+---
+
+import { Callout } from 'nextra/components'
+
+# Security Checks
+
+FeatureDrop includes layered safeguards for source code and manifest content.
+
+## Recommended order
+
+```bash
+pnpm typecheck
+pnpm security-check
+npx featuredrop validate --pattern "features/**/*.md"
+pnpm test
+pnpm build
+pnpm size-check
+```
+
+## Layer 1: Static source audit
+
+```bash
+pnpm security-check
+```
+
+Scans for risky patterns:
+
+| Pattern | Risk |
+| --- | --- |
+| `eval(...)` | Arbitrary code execution |
+| `new Function(...)` | Arbitrary code execution |
+| direct `.innerHTML = ...` | XSS vector |
+| non-allowlisted `dangerouslySetInnerHTML` | XSS vector |
+
+## Layer 2: Manifest safety
+
+```bash
+npx featuredrop validate --pattern "features/**/*.md"
+```
+
+Checks include:
+
+- URL safety for `url`, `image`, `cta.url`
+- Duplicate IDs
+- Dependency cycles
+- Date ordering (`showNewUntil` after `releasedAt`)
+- Unsafe metadata keys
+
+<Callout type="warning">
+  If you build custom headless renderers and use `dangerouslySetInnerHTML`, sanitize content explicitly.
+</Callout>
+
+## Layer 3: GitHub security workflows
+
+- `.github/workflows/ci.yml` runs `pnpm security-check`
+- `.github/workflows/codeql.yml` runs CodeQL scans
+
+Report vulnerabilities via GitHub Security Advisories. See [`SECURITY.md`](https://github.com/GLINCKER/featuredrop/blob/main/SECURITY.md).

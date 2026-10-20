@@ -1,0 +1,55 @@
+---
+title: The Announcement Modal
+---
+
+import { Callout } from 'nextra/components'
+import { AnnouncementDemo } from '../../../components/demos/announcement-demo'
+
+# The Announcement Modal
+
+`<AnnouncementModal>` is the highest-attention surface in FeatureDrop.
+
+Use it for major launches, migrations, or policy updates where users need context before acting.
+
+## Usage
+
+```tsx filename="billing-announcement.tsx"
+import { AnnouncementModal } from 'featuredrop/react'
+
+<AnnouncementModal
+  id="pricing-update-2026"
+  trigger="manual"
+  frequency="once"
+  slides={[
+    {
+      title: 'Pricing update',
+      description: 'Plans update on March 15. Your current plan is unchanged.',
+      primaryCta: { label: 'View details', url: '/pricing' }
+    },
+    {
+      title: 'Need help?',
+      description: 'Support is available during migration week.',
+      secondaryCta: { label: 'Contact support', url: '/support' }
+    }
+  ]}
+/>
+```
+
+## Key props
+
+| Prop | Type | Notes |
+| --- | --- | --- |
+| `id` | `string` | Stable modal identifier |
+| `featureId` / `feature` | `string` / `FeatureEntry` | Build slide from manifest entry |
+| `slides` | `AnnouncementSlide[]` | Custom multi-slide content |
+| `trigger` | `'auto' \| 'manual'` | Auto-open or controlled |
+| `frequency` | `'once' \| 'every-session' \| 'always'` | Re-display policy |
+| `dismissible` | `boolean` | User can close modal |
+
+<Callout type="warning">
+  Keep this for high-impact updates. For routine releases use changelog, badges, banner, or toast.
+</Callout>
+
+## Interactive Demo
+
+<AnnouncementDemo />

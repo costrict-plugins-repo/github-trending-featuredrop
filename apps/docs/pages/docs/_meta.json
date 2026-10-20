@@ -1,0 +1,16 @@
+{
+  "index": "Overview",
+  "quickstart": "Quickstart",
+  "concepts": "Core Concepts",
+  "components": "Components",
+  "shadcn": "shadcn/ui",
+  "frameworks": "Frameworks",
+  "adapters": "Adapters",
+  "automation": "CLI + CI",
+  "integrations": "Integrations",
+  "recipes": "Recipes",
+  "launch-checklist": "Launch Checklist",
+  "migration": "Migration",
+  "troubleshooting": "Troubleshooting",
+  "api": "API Map"
+}

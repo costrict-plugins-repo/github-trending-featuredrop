@@ -1,0 +1,42 @@
+---
+title: The Spotlight
+---
+
+import { Callout } from 'nextra/components'
+import { SpotlightDemo } from '../../../components/demos/spotlight-demo'
+
+# The Spotlight
+
+`<Spotlight>` highlights one target element with a beacon and contextual tooltip.
+
+## Usage
+
+```tsx filename="spotlight.tsx"
+import { Spotlight } from 'featuredrop/react'
+
+<Spotlight
+  featureId="csv-export-launch"
+  targetSelector="#export-btn"
+  placement="right"
+  autoDismiss
+  autoDismissDelay={4000}
+/>
+```
+
+## Key props
+
+| Prop | Type | Notes |
+| --- | --- | --- |
+| `featureId` | `string` | Required manifest id |
+| `targetSelector` / `targetRef` | selector or ref | Target element |
+| `placement` | `'top' \| 'bottom' \| 'left' \| 'right'` | Tooltip position |
+| `autoDismiss` | `boolean` | Optional auto close |
+| `tooltipContent` | `ReactNode` | Custom tooltip body |
+
+<Callout type="warning">
+  Use sparingly. Spotlight is intentionally interruptive.
+</Callout>
+
+## Interactive Demo
+
+<SpotlightDemo />

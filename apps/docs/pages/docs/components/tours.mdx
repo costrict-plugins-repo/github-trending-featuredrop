@@ -1,0 +1,52 @@
+---
+title: The Tour Component
+---
+
+import { Callout } from 'nextra/components'
+import { TourDemo } from '../../../components/demos/tour-demo'
+
+# The Tour Component
+
+`<Tour>` is a guided, anchored step sequence for onboarding flows.
+
+## Usage
+
+```tsx filename="v2-feature-tour.tsx"
+import { Tour } from 'featuredrop/react'
+
+const steps = [
+  {
+    id: 'sidebar',
+    target: '#sidebar-nav',
+    title: 'Redesigned sidebar',
+    content: 'Primary navigation is now grouped by workflow.'
+  },
+  {
+    id: 'quick-actions',
+    target: '#quick-actions-bar',
+    title: 'Quick actions',
+    content: 'Create reports and exports from one place.'
+  }
+]
+
+<Tour id="v2-dashboard-tour" steps={steps} onTourCompleted={() => console.log('Tour done')} />
+```
+
+## Key props
+
+| Prop | Type | Notes |
+| --- | --- | --- |
+| `id` | `string` | Required stable tour id |
+| `steps` | `TourStep[]` | Required ordered steps |
+| `overlay` | `boolean` | Backdrop on/off |
+| `showProgress` | `boolean` | Progress indicator |
+| `persistence` | `boolean` | Resume from saved step |
+| `onTourCompleted` / `onTourSkipped` | callbacks | Lifecycle events |
+
+<Callout type="warning">
+  Keep targets stable and include a skip path (`Esc` is supported). Missing targets are skipped.
+</Callout>
+
+## Interactive Demo
+
+<TourDemo />

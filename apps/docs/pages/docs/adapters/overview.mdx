@@ -1,0 +1,45 @@
+---
+title: Adapters Overview
+---
+
+import { Cards, Card, Callout } from 'nextra/components'
+
+# Adapters Overview
+
+Adapters control where FeatureDrop stores user state (`watermark`, dismissed IDs, queued operations).
+
+All adapters implement the same storage contract, so UI components stay unchanged when you swap persistence.
+
+<Callout type="info">
+  Choose by reliability and sync requirements, not by convenience alone.
+</Callout>
+
+## Selection matrix
+
+<Cards>
+  <Card title="MemoryAdapter" href="/docs/adapters/overview">
+    Fast local tests and demos. Resets on refresh.
+  </Card>
+  <Card title="LocalStorageAdapter" href="/docs/adapters/local-storage">
+    Browser persistence on a single device.
+  </Card>
+  <Card title="RemoteAdapter" href="/docs/adapters/remote">
+    Cross-device sync through your backend API.
+  </Card>
+  <Card title="IndexedDBAdapter" href="/docs/adapters/indexeddb">
+    Offline-first browser storage with queued flush/sync hooks.
+  </Card>
+  <Card title="HybridAdapter" href="/docs/adapters/hybrid">
+    Local speed + remote durability with batched sync.
+  </Card>
+  <Card title="Database Adapters" href="/docs/adapters/databases">
+    Server adapters for Postgres, Mongo, Redis, Supabase, MySQL, SQLite.
+  </Card>
+</Cards>
+
+## Practical path
+
+1. Start with `MemoryAdapter` for development
+2. Move to `LocalStorageAdapter` or `RemoteAdapter` for production
+3. Add `IndexedDBAdapter`/`HybridAdapter` for offline or low-connectivity UX
+4. Use DB adapters server-side when you need strict data ownership

@@ -1,0 +1,54 @@
+---
+title: The Spotlight Chain
+---
+
+import { Callout } from 'nextra/components'
+import { SpotlightChainDemo } from '../../../components/demos/spotlight-chain-demo'
+
+# The Spotlight Chain
+
+`<SpotlightChain>` sequences multiple targeted hints across your UI.
+
+It is useful for guided discovery without a full tour dialog.
+
+## Usage
+
+```tsx filename="onboarding-chain.tsx"
+import { SpotlightChain } from 'featuredrop/react'
+
+const steps = [
+  {
+    id: 'targeting',
+    target: '#segment-target',
+    title: 'Audience targeting',
+    content: 'Define rollout segments before launch.'
+  },
+  {
+    id: 'measure',
+    target: '#segment-measure',
+    title: 'Measure impact',
+    content: 'Track interaction rates after launch.'
+  }
+]
+
+<SpotlightChain steps={steps} startOnMount />
+```
+
+## Key props
+
+| Prop | Type | Notes |
+| --- | --- | --- |
+| `steps` | `SpotlightChainStep[]` | Required sequence |
+| `startOnMount` | `boolean` | Start automatically |
+| `autoAdvance` | `boolean` | Step progression timer |
+| `autoAdvanceMs` | `number` | Default auto-advance delay |
+| `onStepViewed` | `(step, index) => void` | Analytics hook |
+| `onComplete` | `() => void` | Completion callback |
+
+<Callout type="info">
+  Steps with missing targets are skipped automatically with a console warning.
+</Callout>
+
+## Interactive Demo
+
+<SpotlightChainDemo />

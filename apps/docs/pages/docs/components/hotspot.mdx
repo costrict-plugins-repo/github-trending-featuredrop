@@ -1,0 +1,44 @@
+---
+title: The Hotspot Component
+---
+
+import { Callout } from 'nextra/components'
+import { HotspotDemo } from '../../../components/demos/hotspot-demo'
+
+# The Hotspot Component
+
+`<Hotspot>` is a lightweight beacon anchored to a target selector. It expands into a small tooltip on interaction.
+
+## Usage
+
+```tsx filename="export-hotspot.tsx"
+import { Hotspot, TooltipGroup } from 'featuredrop/react'
+
+<TooltipGroup maxVisible={2}>
+  <Hotspot id="editor-tip" target="#editor" type="new" frequency="once">
+    Try the markdown parser for release notes.
+  </Hotspot>
+
+  <Hotspot id="analytics-tip" target="#analytics" type="info" frequency="every-session">
+    Track changelog engagement after launch.
+  </Hotspot>
+</TooltipGroup>
+```
+
+## Key props
+
+| Prop | Type | Notes |
+| --- | --- | --- |
+| `id` | `string` | Required hotspot id |
+| `target` | `string` | Required CSS selector |
+| `type` | `'info' \| 'new' \| 'help'` | Beacon style |
+| `frequency` | `'once' \| 'every-session' \| 'always'` | Re-display policy |
+| `children` | `ReactNode` | Tooltip content |
+
+<Callout type="info">
+  Wrap multiple hotspots in `<TooltipGroup>` to cap simultaneous tooltips.
+</Callout>
+
+## Interactive Demo
+
+<HotspotDemo />

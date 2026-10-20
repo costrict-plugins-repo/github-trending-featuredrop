@@ -1,0 +1,184 @@
+---
+title: API Reference
+---
+
+import { Callout } from 'nextra/components'
+
+# API Reference
+
+Practical import map and signatures for the public API.
+
+## Package Entrypoints
+
+| Import path | Use when |
+| --- | --- |
+| `featuredrop` | Core helpers and lightweight browser adapters |
+| `featuredrop/adapters` | Full adapter surface (remote, hybrid, DB, IndexedDB) |
+| `featuredrop/react` | Provider, hooks, and React UI components |
+| `featuredrop/markdown` | Markdown to sanitized HTML parser |
+| `featuredrop/rss` | RSS feed generator |
+| `featuredrop/schema` | `validateManifest` + schema exports |
+| `featuredrop/testing` | Mock helpers and test wrappers |
+| `featuredrop/ci` | Manifest diffing/CI summaries |
+| `featuredrop/cms` | CMS/content adapters |
+| `featuredrop/renderer` | Headless changelog renderer protocol |
+| `featuredrop/flags` | Feature flag bridges |
+| `featuredrop/bridges` | Slack/Discord/webhook/email/RSS bridges |
+| `featuredrop/admin` | Manifest editor/admin components |
+
+## Core Runtime (`featuredrop`)
+
+```ts
+import {
+  isNew,
+  getNewFeatures,
+  getNewFeatureCount,
+  hasNewFeature,
+  getNewFeaturesSorted,
+  LocalStorageAdapter
+} from 'featuredrop'
+import { parseDescription } from 'featuredrop/markdown'
+import { generateRSS } from 'featuredrop/rss'
+
+const storage = new LocalStorageAdapter({ prefix: 'app' })
+
+const entries = getNewFeatures(manifest, storage)
+const count = getNewFeatureCount(manifest, storage)
+const sorted = getNewFeaturesSorted(manifest, storage)
+const hasSidebarBadge = hasNewFeature(manifest, '/dashboard', storage)
+
+const first = manifest[0]
+if (first) {
+  const active = isNew(first, storage.getWatermark(), storage.getDismissedIds())
+  console.log(active)
+}
+
+const html = parseDescription('**Release** with `code`')
+const rss = generateRSS(manifest, { title: 'Product Updates' })
+```
+
+| Helper | Description |
+| --- | --- |
+| `isNew(feature, watermark, dismissedIds, now?, userContext?, matchAudience?, appVersion?, dependencyState?, triggerContext?, flagBridge?, product?)` | Evaluate one feature against all gates |
+| `getNewFeatures(manifest, storage, ...)` | Returns eligible unseen entries |
+| `getNewFeatureCount(manifest, storage, ...)` | Returns unread count |
+| `hasNewFeature(manifest, sidebarKey, storage, ...)` | Sidebar-key check for nav badges |
+| `getNewFeaturesSorted(manifest, storage, ...)` | Priority + date sorted entries |
+
+## Headless Renderer (`featuredrop/renderer`)
+
+```ts
+import { createChangelogRenderer } from 'featuredrop/renderer'
+import { LocalStorageAdapter } from 'featuredrop'
+
+const renderer = createChangelogRenderer({
+  manifest,
+  storage: new LocalStorageAdapter({ prefix: 'app' }),
+  appVersion: '2.4.0'
+})
+
+renderer.actions.trackUsageEvent('opened-settings')
+renderer.actions.markFeatureSeen('dashboard-v2')
+renderer.subscribe((state) => console.log(state.newCount))
+```
+
+Use this when you want FeatureDrop filtering/state without React components.
+
+## Adapters (`featuredrop/adapters`)
+
+```ts
+import {
+  RemoteAdapter,
+  IndexedDBAdapter,
+  HybridAdapter,
+  PostgresAdapter
+} from 'featuredrop/adapters'
+```
+
+Use this entrypoint for non-core adapters (remote, hybrid, and server-side database adapters).
+
+`RemoteAdapter` also exposes `flushPendingDismisses()` and `destroy()` for aggressive queue durability and teardown-safe cleanup.
+
+## React SDK (`featuredrop/react`)
+
+### Provider
+
+```tsx
+import { FeatureDropProvider } from 'featuredrop/react'
+import { LocalStorageAdapter } from 'featuredrop'
+
+<FeatureDropProvider
+  manifest={manifest}
+  storage={new LocalStorageAdapter({ prefix: 'app' })}
+  appVersion="2.4.0"
+  userContext={{ plan: 'pro', role: 'admin', region: 'us' }}
+>
+  {children}
+</FeatureDropProvider>
+```
+
+Key props: `manifest`, `storage`, `appVersion`, `userContext`, `matchAudience`, `product`, `throttle`, `flagBridge`, `locale`, `animation`.
+
+### `useFeatureDrop()`
+
+```tsx
+import { useFeatureDrop } from 'featuredrop/react'
+
+function ReleaseActions() {
+  const { newFeatures, newCount, dismiss, dismissAll, isNew, getFeature } = useFeatureDrop()
+
+  return (
+    <div>
+      <span>{newCount} updates</span>
+      <button onClick={() => void dismissAll()}>Mark all read</button>
+      <button onClick={() => dismiss(newFeatures[0]?.id ?? '')}>Dismiss first</button>
+      <span>{isNew('/dashboard') ? 'new' : 'seen'}</span>
+      <span>{getFeature('/dashboard')?.label ?? 'none'}</span>
+    </div>
+  )
+}
+```
+
+### Core Components
+
+- [`<ChangelogWidget />`](/docs/components/changelog)
+- [`<ChangelogPage />`](/docs/components/changelog)
+- [`<NewBadge />`](/docs/components/changelog)
+- [`<Banner />` / `<Toast />`](/docs/components/banner-toast)
+- [`<Tour />`](/docs/components/tours)
+- [`<Checklist />`](/docs/components/checklist)
+- [`<Hotspot />` / `<Spotlight />` / `<SpotlightChain />`](/docs/components/spotlight)
+- [`<AnnouncementModal />`](/docs/components/announcement)
+- [`<Survey />`](/docs/components/survey)
+- [`<FeedbackWidget />`](/docs/components/feedback)
+- [`<FeatureRequestButton />` / `<FeatureRequestForm />`](/docs/components/feature-requests)
+
+## Validation (`featuredrop/schema`)
+
+```ts
+import { validateManifest } from 'featuredrop/schema'
+
+const result = validateManifest(manifest)
+if (!result.valid) {
+  console.error(result.errors)
+  process.exit(1)
+}
+```
+
+`validateManifest` checks required fields (`id`, `label`, `releasedAt`, `showNewUntil`), duplicate IDs, date ordering (`showNewUntil > releasedAt`), dependency cycles, URL safety, and unsafe `meta` keys.
+
+## CLI
+
+```bash
+npx featuredrop init --format markdown
+npx featuredrop add --label "New Analytics" --category analytics --show-days 21
+npx featuredrop validate --pattern "features/**/*.md"
+npx featuredrop build --pattern "features/**/*.md" --out featuredrop.manifest.json
+npx featuredrop doctor --pattern "features/**/*.md"
+pnpm security-check
+pnpm size-check
+```
+
+<Callout type="info">
+  Full command flags: [CLI Reference](/docs/automation/cli). CI patterns: [CI Utilities](/docs/automation/ci).
+</Callout>

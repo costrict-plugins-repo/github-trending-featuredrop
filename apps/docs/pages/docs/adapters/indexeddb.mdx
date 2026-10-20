@@ -1,0 +1,50 @@
+---
+title: IndexedDB Adapter
+---
+
+import { Callout } from 'nextra/components'
+
+# IndexedDB Adapter
+
+`IndexedDBAdapter` is an offline-first browser adapter with optional remote reconciliation hooks.
+
+## Typical integration
+
+```ts filename="featuredrop.config.ts"
+import { IndexedDBAdapter } from 'featuredrop/adapters'
+
+export const storage = new IndexedDBAdapter({
+  prefix: 'featuredrop',
+  dbName: 'featuredrop-client-db',
+  storeName: 'state',
+  flushDebounceMs: 500,
+  autoSyncOnOnline: true,
+  onSyncState: async () => {
+    const res = await fetch('/api/featuredrop/state')
+    return res.json()
+  },
+  onFlushDismissBatch: async (ids) => {
+    await fetch('/api/featuredrop/dismiss-batch', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids })
+    })
+  },
+  onFlushDismissAll: async (watermark) => {
+    await fetch('/api/featuredrop/dismiss-all', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ watermark })
+    })
+  }
+})
+```
+
+## Runtime helpers
+
+- `await storage.flushQueue()` to force queued writes
+- `await storage.syncFromRemote()` to pull remote state then flush queue
+
+<Callout type="info">
+  Good fit for offline-capable PWAs and low-connectivity environments.
+</Callout>

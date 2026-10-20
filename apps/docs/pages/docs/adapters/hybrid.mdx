@@ -1,0 +1,45 @@
+---
+title: Hybrid Adapter
+---
+
+import { Callout } from 'nextra/components'
+
+# Hybrid Adapter
+
+`HybridAdapter` combines local immediacy with remote durability.
+
+It reads from local + remote state and batches remote dismiss writes.
+
+## Typical integration
+
+```ts filename="featuredrop.config.ts"
+import { HybridAdapter, IndexedDBAdapter, RemoteAdapter } from 'featuredrop/adapters'
+
+const local = new IndexedDBAdapter({ dbName: 'featuredrop-v1' })
+
+const remote = new RemoteAdapter({
+  url: '/api/featuredrop',
+  userId: 'current-user-id'
+})
+
+export const storage = new HybridAdapter({
+  local,
+  remote,
+  syncBeforeWrite: false,
+  dismissBatchWindowMs: 250,
+  syncIntervalMs: 30_000,
+  syncOnVisibilityChange: true,
+  syncOnOnline: true
+})
+```
+
+## Why use it
+
+- Instant local UI updates on dismiss
+- Periodic and event-driven remote sync
+- Batched remote writes during rapid interaction bursts
+- `sync()` now drains queued dismisses after remote reconciliation (useful for online recovery)
+
+<Callout type="info">
+  Call `await storage.sync()` after auth/session restore or reconnect to reconcile and flush pending queue.
+</Callout>

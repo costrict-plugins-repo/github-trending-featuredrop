@@ -1,0 +1,60 @@
+---
+title: Core Architecture
+---
+
+import { Callout, Steps } from 'nextra/components'
+
+# Core Architecture
+
+FeatureDrop is a library, not a hosted platform.
+
+You own rendering, storage, and analytics.
+
+## Data Flow
+
+1. Pass `manifest` + `storage` to `<FeatureDropProvider>`.
+2. Provider reads user state (`watermark`, dismissed IDs).
+3. Provider evaluates all visibility rules.
+4. Components/hooks consume computed state from context.
+5. Interactions emit analytics callbacks/collector events.
+
+## Provider Evaluation Loop
+
+<Steps>
+### Read persistence
+Loads state from your `StorageAdapter`.
+
+### Evaluate gates
+Checks audience (`userContext`), semver (`appVersion`), flags, product scope, dependency rules, triggers, and time windows (`publishAt` / `showNewUntil`).
+
+### Publish context state
+Exposes `newFeatures`, `newCount`, `isNew(sidebarKey)`, `dismiss`, `dismissAll`, and orchestration helpers.
+</Steps>
+
+## Headless customization example
+
+```tsx filename="CustomChangelog.tsx"
+import { ChangelogWidget } from 'featuredrop/react'
+
+<ChangelogWidget>
+  {({ isOpen, toggle, features, count, dismiss }) => (
+    <div className="my-ui">
+      <button onClick={toggle}>Updates ({count})</button>
+      {isOpen && (
+        <ul>
+          {features.map((f) => (
+            <li key={f.id}>
+              {f.label}
+              <button onClick={() => dismiss(f.id)}>Dismiss</button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )}
+</ChangelogWidget>
+```
+
+<Callout type="warning">
+  Keep a single React instance in your workspace. Duplicate React copies cause hook/context errors.
+</Callout>

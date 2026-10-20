@@ -1,0 +1,77 @@
+---
+title: CI Utilities
+---
+
+import { Callout } from 'nextra/components'
+
+# CI Utilities
+
+FeatureDrop should fail CI on invalid manifests, unsafe content, and bundle regressions.
+
+## Recommended baseline
+
+```yaml filename=".github/workflows/ci.yml"
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm security-check
+      - run: npx featuredrop validate --pattern "features/**/*.md"
+      - run: npx featuredrop doctor --pattern "features/**/*.md"
+      - run: pnpm test
+      - run: pnpm build
+      - run: pnpm size-check
+      - run: npx featuredrop build --pattern "features/**/*.md" --out featuredrop.manifest.json
+      - run: pnpm docs:build
+```
+
+## Programmatic manifest diff
+
+```ts filename="scripts/manifest-diff.ts"
+import {
+  diffManifest,
+  generateChangelogDiff,
+  generateChangelogDiffMarkdown,
+  validateManifestForCI
+} from 'featuredrop/ci'
+import { readFileSync } from 'node:fs'
+
+const beforeManifest = JSON.parse(readFileSync('before.manifest.json', 'utf-8'))
+const afterManifest = JSON.parse(readFileSync('featuredrop.manifest.json', 'utf-8'))
+
+const validation = validateManifestForCI(afterManifest)
+if (!validation.valid) {
+  console.error('Manifest validation failed')
+  console.error(validation.errors)
+  process.exit(1)
+}
+
+const diff = diffManifest(beforeManifest, afterManifest)
+console.log(generateChangelogDiff(diff, { includeFieldChanges: true }))
+console.log(generateChangelogDiffMarkdown(diff, {
+  includeFieldChanges: true,
+  maxItemsPerSection: 10
+}))
+```
+
+## Common failure conditions
+
+- Duplicate feature IDs
+- Missing required fields (`id`, `label`, `releasedAt`, `showNewUntil`)
+- Invalid date ordering (`showNewUntil` must be after `releasedAt`)
+- Dependency cycles in `dependsOn`
+- Unsafe URLs in `url`, `image`, `cta.url`
+- Unsafe `meta` keys (`__proto__`, `constructor`, `prototype`)
+- Bundle size budget failures (`pnpm size-check`)
+
+<Callout type="warning">
+  Build manifests consistently across branches. Environment-specific transforms create noisy diffs.
+</Callout>

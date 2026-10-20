@@ -1,0 +1,50 @@
+---
+title: The Checklist Component
+---
+
+import { Callout } from 'nextra/components'
+import { ChecklistDemo } from '../../../components/demos/checklist-demo'
+
+# The Checklist Component
+
+`<Checklist>` is task-based onboarding with persisted progress.
+
+Use it when users complete steps across multiple sessions.
+
+## Usage
+
+```tsx filename="onboarding-checklist.tsx"
+import { Checklist } from 'featuredrop/react'
+
+const tasks = [
+  { id: 'connect-provider', title: 'Connect provider', estimatedTime: '2m' },
+  { id: 'add-widget', title: 'Add changelog widget', estimatedTime: '3m' },
+  { id: 'enable-ci', title: 'Enable CI checks', estimatedTime: '4m' }
+]
+
+<Checklist
+  id="new-user-onboarding"
+  tasks={tasks}
+  position="inline"
+  onComplete={() => console.log('Checklist complete')}
+/>
+```
+
+## Key props
+
+| Prop | Type | Notes |
+| --- | --- | --- |
+| `id` | `string` | Required checklist id |
+| `tasks` | `ChecklistTask[]` | Required task list |
+| `position` | `'inline' \| corners` | Layout |
+| `collapsible` | `boolean` | Collapse support |
+| `dismissible` | `boolean` | Hide checklist |
+| `onComplete` | `() => void` | Fires when all tasks complete |
+
+<Callout type="tip">
+  Keep checklists short (3-7 tasks) and front-load the first value moment.
+</Callout>
+
+## Interactive Demo
+
+<ChecklistDemo />

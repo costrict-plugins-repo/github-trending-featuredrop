@@ -1,0 +1,57 @@
+---
+title: The Changelog Components
+---
+
+import { Tabs, Tab, Callout } from 'nextra/components'
+import { ChangelogDemo } from '../../../components/demos/changelog-demo'
+import { ChangelogPageDemo } from '../../../components/demos/changelog-page-demo'
+
+# The Changelog Components
+
+FeatureDrop provides two changelog surfaces:
+
+- `<ChangelogWidget>` for in-app discovery
+- `<ChangelogPage>` for full history/search/filtering
+
+<Tabs items={["Widget", "Page"]}>
+  <Tab>
+    ### `ChangelogWidget`
+
+    Compact in-app surface for unread updates. Works well in nav/header.
+
+    Key capabilities: unread count, dismiss actions, reactions, custom trigger and entry rendering.
+  </Tab>
+  <Tab>
+    ### `ChangelogPage`
+
+    Full-page release history with pagination, category filters, search, share links, and optional reactions.
+  </Tab>
+</Tabs>
+
+<Callout type="info">
+  Recommended path: start with widget, add page when your update volume grows.
+</Callout>
+
+## Widget Demo
+
+<ChangelogDemo />
+
+## Page Demo
+
+```tsx filename="app/updates/page.tsx"
+import { MemoryAdapter } from 'featuredrop'
+import { ChangelogPage, FeatureDropProvider } from 'featuredrop/react'
+import { manifest } from '../../featuredrop.manifest'
+
+const storage = new MemoryAdapter()
+
+export default function ChangelogRoute() {
+  return (
+    <FeatureDropProvider manifest={manifest} storage={storage}>
+      <ChangelogPage pageSize={3} showFilters showSearch pagination="load-more" />
+    </FeatureDropProvider>
+  )
+}
+```
+
+<ChangelogPageDemo />

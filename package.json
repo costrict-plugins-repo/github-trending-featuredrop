@@ -1,0 +1,460 @@
+{
+  "name": "featuredrop",
+  "version": "3.0.3",
+  "description": "Lightweight feature discovery system. Show 'New' badges that auto-expire.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "featuredrop": "./dist/featuredrop.cjs"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./react": {
+      "import": {
+        "types": "./dist/react.d.ts",
+        "default": "./dist/react.js"
+      },
+      "require": {
+        "types": "./dist/react.d.cts",
+        "default": "./dist/react.cjs"
+      }
+    },
+    "./adapters": {
+      "import": {
+        "types": "./dist/adapters.d.ts",
+        "default": "./dist/adapters.js"
+      },
+      "require": {
+        "types": "./dist/adapters.d.cts",
+        "default": "./dist/adapters.cjs"
+      }
+    },
+    "./markdown": {
+      "import": {
+        "types": "./dist/markdown.d.ts",
+        "default": "./dist/markdown.js"
+      },
+      "require": {
+        "types": "./dist/markdown.d.cts",
+        "default": "./dist/markdown.cjs"
+      }
+    },
+    "./rss": {
+      "import": {
+        "types": "./dist/rss.d.ts",
+        "default": "./dist/rss.js"
+      },
+      "require": {
+        "types": "./dist/rss.d.cts",
+        "default": "./dist/rss.cjs"
+      }
+    },
+    "./admin": {
+      "import": {
+        "types": "./dist/admin.d.ts",
+        "default": "./dist/admin.js"
+      },
+      "require": {
+        "types": "./dist/admin.d.cts",
+        "default": "./dist/admin.cjs"
+      }
+    },
+    "./vue": {
+      "import": {
+        "default": "./dist/vue.js"
+      },
+      "require": {
+        "default": "./dist/vue.cjs"
+      }
+    },
+    "./solid": {
+      "import": {
+        "types": "./dist/solid.d.ts",
+        "default": "./dist/solid.js"
+      },
+      "require": {
+        "types": "./dist/solid.d.cts",
+        "default": "./dist/solid.cjs"
+      }
+    },
+    "./svelte": {
+      "import": {
+        "default": "./dist/svelte.js"
+      },
+      "require": {
+        "default": "./dist/svelte.cjs"
+      }
+    },
+    "./preact": {
+      "import": {
+        "types": "./dist/preact.d.ts",
+        "default": "./dist/preact.js"
+      },
+      "require": {
+        "types": "./dist/preact.d.cts",
+        "default": "./dist/preact.cjs"
+      }
+    },
+    "./web-components": {
+      "import": {
+        "types": "./dist/web-components.d.ts",
+        "default": "./dist/web-components.js"
+      },
+      "require": {
+        "types": "./dist/web-components.d.cts",
+        "default": "./dist/web-components.cjs"
+      }
+    },
+    "./angular": {
+      "import": {
+        "types": "./dist/angular.d.ts",
+        "default": "./dist/angular.js"
+      },
+      "require": {
+        "types": "./dist/angular.d.cts",
+        "default": "./dist/angular.cjs"
+      }
+    },
+    "./schema": {
+      "import": {
+        "types": "./dist/schema.d.ts",
+        "default": "./dist/schema.js"
+      },
+      "require": {
+        "types": "./dist/schema.d.cts",
+        "default": "./dist/schema.cjs"
+      }
+    },
+    "./bridges": {
+      "import": {
+        "types": "./dist/bridges.d.ts",
+        "default": "./dist/bridges.js"
+      },
+      "require": {
+        "types": "./dist/bridges.d.cts",
+        "default": "./dist/bridges.cjs"
+      }
+    },
+    "./cms": {
+      "import": {
+        "types": "./dist/cms.d.ts",
+        "default": "./dist/cms.js"
+      },
+      "require": {
+        "types": "./dist/cms.d.cts",
+        "default": "./dist/cms.cjs"
+      }
+    },
+    "./ci": {
+      "import": {
+        "types": "./dist/ci.d.ts",
+        "default": "./dist/ci.js"
+      },
+      "require": {
+        "types": "./dist/ci.d.cts",
+        "default": "./dist/ci.cjs"
+      }
+    },
+    "./renderer": {
+      "import": {
+        "types": "./dist/renderer.d.ts",
+        "default": "./dist/renderer.js"
+      },
+      "require": {
+        "types": "./dist/renderer.d.cts",
+        "default": "./dist/renderer.cjs"
+      }
+    },
+    "./flags": {
+      "import": {
+        "types": "./dist/flags.d.ts",
+        "default": "./dist/flags.js"
+      },
+      "require": {
+        "types": "./dist/flags.d.cts",
+        "default": "./dist/flags.cjs"
+      }
+    },
+    "./testing": {
+      "import": {
+        "types": "./dist/testing.d.ts",
+        "default": "./dist/testing.js"
+      },
+      "require": {
+        "types": "./dist/testing.d.cts",
+        "default": "./dist/testing.cjs"
+      }
+    },
+    "./react/hooks": {
+      "import": {
+        "types": "./dist/react-hooks.d.ts",
+        "default": "./dist/react-hooks.js"
+      },
+      "require": {
+        "types": "./dist/react-hooks.d.cts",
+        "default": "./dist/react-hooks.cjs"
+      }
+    },
+    "./tailwind": {
+      "import": {
+        "types": "./dist/tailwind.d.ts",
+        "default": "./dist/tailwind.js"
+      },
+      "require": {
+        "types": "./dist/tailwind.d.cts",
+        "default": "./dist/tailwind.cjs"
+      }
+    },
+    "./engine": {
+      "import": {
+        "types": "./dist/engine.d.ts",
+        "default": "./dist/engine.js"
+      },
+      "require": {
+        "types": "./dist/engine.d.cts",
+        "default": "./dist/engine.cjs"
+      }
+    },
+    "./next": {
+      "import": {
+        "types": "./dist/next.d.ts",
+        "default": "./dist/next.js"
+      },
+      "require": {
+        "types": "./dist/next.d.cts",
+        "default": "./dist/next.cjs"
+      }
+    },
+    "./remix": {
+      "import": {
+        "types": "./dist/remix.d.ts",
+        "default": "./dist/remix.js"
+      },
+      "require": {
+        "types": "./dist/remix.d.cts",
+        "default": "./dist/remix.cjs"
+      }
+    },
+    "./astro": {
+      "import": {
+        "types": "./dist/astro.d.ts",
+        "default": "./dist/astro.js"
+      },
+      "require": {
+        "types": "./dist/astro.d.cts",
+        "default": "./dist/astro.cjs"
+      }
+    },
+    "./nuxt": {
+      "import": {
+        "types": "./dist/nuxt.d.ts",
+        "default": "./dist/nuxt.js"
+      },
+      "require": {
+        "types": "./dist/nuxt.d.cts",
+        "default": "./dist/nuxt.cjs"
+      }
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "react": [
+        "./dist/react.d.ts"
+      ],
+      "adapters": [
+        "./dist/adapters.d.ts"
+      ],
+      "markdown": [
+        "./dist/markdown.d.ts"
+      ],
+      "rss": [
+        "./dist/rss.d.ts"
+      ],
+      "admin": [
+        "./dist/admin.d.ts"
+      ],
+      "solid": [
+        "./dist/solid.d.ts"
+      ],
+      "preact": [
+        "./dist/preact.d.ts"
+      ],
+      "web-components": [
+        "./dist/web-components.d.ts"
+      ],
+      "angular": [
+        "./dist/angular.d.ts"
+      ],
+      "testing": [
+        "./dist/testing.d.ts"
+      ],
+      "schema": [
+        "./dist/schema.d.ts"
+      ],
+      "bridges": [
+        "./dist/bridges.d.ts"
+      ],
+      "cms": [
+        "./dist/cms.d.ts"
+      ],
+      "ci": [
+        "./dist/ci.d.ts"
+      ],
+      "renderer": [
+        "./dist/renderer.d.ts"
+      ],
+      "flags": [
+        "./dist/flags.d.ts"
+      ],
+      "react/hooks": [
+        "./dist/react-hooks.d.ts"
+      ],
+      "tailwind": [
+        "./dist/tailwind.d.ts"
+      ],
+      "engine": [
+        "./dist/engine.d.ts"
+      ],
+      "next": [
+        "./dist/next.d.ts"
+      ],
+      "remix": [
+        "./dist/remix.d.ts"
+      ],
+      "astro": [
+        "./dist/astro.d.ts"
+      ],
+      "nuxt": [
+        "./dist/nuxt.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.cjs",
+    "dist/**/*.d.ts",
+    "dist/**/*.d.cts",
+    "dist/**/*.map",
+    ".claude-plugin/**",
+    "skills/**",
+    "context7.json",
+    "src/ai/cursorrules.txt",
+    "src/ai/claude-skill.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "playground": "pnpm --dir examples/sandbox-react dev",
+    "playground:build": "pnpm --dir examples/sandbox-react build",
+    "example:nextjs": "pnpm --dir examples/nextjs-shadcn dev",
+    "example:nextjs:build": "pnpm --dir examples/nextjs-shadcn build",
+    "docs:install": "pnpm --dir apps/docs install",
+    "docs:dev": "lsof -ti:3003 | xargs kill -9 2>/dev/null; pnpm --dir apps/docs dev -p 3003",
+    "build:registry": "node ./scripts/build-registry.mjs",
+    "docs:build": "pnpm run build:registry && pnpm --dir apps/docs build",
+    "docs:start": "pnpm --dir apps/docs start",
+    "featuredrop:build": "node ./dist/featuredrop.cjs build",
+    "featuredrop:validate": "node ./dist/featuredrop.cjs validate",
+    "dev": "lsof -ti:3003 | xargs kill -9 2>/dev/null; pnpm --dir apps/docs dev -p 3003",
+    "dev:lib": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "security-check": "node ./scripts/security-audit.mjs",
+    "size-check": "node ./scripts/check-bundle-budgets.mjs",
+    "clean": "rm -rf dist coverage",
+    "prepublishOnly": "pnpm run build"
+  },
+  "keywords": [
+    "feature-discovery",
+    "new-badge",
+    "whatsnew",
+    "feature-flags",
+    "sidebar",
+    "badge",
+    "feature-announcement",
+    "whats-new",
+    "product-updates",
+    "typescript",
+    "react"
+  ],
+  "author": "Glincker <hello@glincker.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GLINCKER/featuredrop"
+  },
+  "homepage": "https://featuredrop.dev",
+  "bugs": {
+    "url": "https://github.com/GLINCKER/featuredrop/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "peerDependencies": {
+    "preact": ">=10.0.0",
+    "react": ">=18",
+    "solid-js": ">=1.8.0",
+    "svelte": ">=5.0.0",
+    "vue": ">=3.3",
+    "zod": ">=3.22.0"
+  },
+  "peerDependenciesMeta": {
+    "preact": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "solid-js": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    },
+    "svelte": {
+      "optional": true
+    },
+    "zod": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.0.0",
+    "@commitlint/config-conventional": "^19.0.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@vitest/coverage-v8": "^2.1.0",
+    "axe-core": "^4.11.1",
+    "husky": "^9.0.0",
+    "jsdom": "^25.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "solid-js": "^1.9.10",
+    "tsup": "^8.3.0",
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.0",
+    "vitest-axe": "^0.1.0"
+  },
+  "dependencies": {
+    "posthog-node": "^5.26.0"
+  }
+}

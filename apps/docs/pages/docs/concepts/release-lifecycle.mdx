@@ -1,0 +1,98 @@
+---
+title: The Release Lifecycle
+---
+
+import { Steps, Callout } from 'nextra/components'
+
+# The Release Lifecycle
+
+FeatureDrop works best when release communication ships in the same pull request as the feature. No separate dashboard, no SaaS publish step.
+
+## The five stages
+
+<Steps>
+### 1) Author the entry
+
+Add a new manifest entry alongside your feature code:
+
+```json filename="features.json"
+{
+  "id": "dark-mode",
+  "label": "Dark Mode",
+  "description": "Full dark theme support across every surface.",
+  "releasedAt": "2025-03-01T00:00:00Z",
+  "showNewUntil": "2025-04-01T00:00:00Z",
+  "category": "ui",
+  "version": "2.1.0",
+  "type": "feature"
+}
+```
+
+Optional fields: `audience` (segmentation), `trigger` (conditional display), `priority`, `cta` (call to action).
+
+### 2) Validate in CI
+
+Run the CLI checks before merge to catch errors early:
+
+```bash
+featuredrop validate   # Schema + duplicate ID check
+featuredrop doctor     # Security + best practice audit
+```
+
+These run in your CI pipeline and fail the build on invalid manifests. See [CI Utilities](/docs/automation/ci) for setup.
+
+### 3) Deploy app code
+
+The manifest ships with your app bundle. When `FeatureDropProvider` mounts, it reads the manifest and computes which features are currently "new" based on:
+
+- **Watermark**: features released after the user's last seen timestamp
+- **Dismissed IDs**: features the user explicitly dismissed
+- **Expiry**: features past their `showNewUntil` date
+- **Audience**: features whose audience rules match the current user context
+
+No external API call, no third-party script. Everything runs client-side from the JSON you shipped.
+
+### 4) Observe adoption
+
+Analytics callbacks fire on key events:
+
+| Event | When it fires |
+|-------|--------------|
+| `onFeatureImpression` | Feature surfaces in any component |
+| `onFeatureDismissed` | User dismisses a single feature |
+| `onAllDismissed` | User dismisses all features at once |
+
+Pipe these to any analytics provider (Segment, Mixpanel, PostHog, custom). See [Analytics Integration](/docs/integrations/analytics).
+
+### 5) Retire automatically
+
+Features stop surfacing when any of these conditions are met:
+
+- `showNewUntil` date has passed
+- User dismissed the feature
+- Watermark has advanced past `releasedAt`
+- Version gate: `appVersion` exceeds the feature's target version
+- Audience rules no longer match
+
+No manual cleanup required. Old manifest entries are inert.
+</Steps>
+
+## Lifecycle diagram
+
+```
+Author Entry → Validate in CI → Deploy → Surface in UI → Auto-retire
+     │              │               │           │              │
+  features.json  `featuredrop     Bundle     isNew() =      showNewUntil
+  in same PR      validate`      ships it     true           expires
+```
+
+## Best practices
+
+<Callout type="info">
+  Keep high-interruption surfaces (modals, tours, spotlights) for major launches. Use changelog + badges for routine updates. The [Launch Flow](/docs/components/launch-flow) pattern helps you coordinate multi-surface rollouts.
+</Callout>
+
+- **One entry per feature, not per PR.** If a feature spans multiple PRs, add the manifest entry in the final one.
+- **Set realistic expiry windows.** 2-4 weeks for most features. Shorter for hotfixes. Longer for major launches.
+- **Use categories** to organize features in the changelog widget (`ui`, `api`, `platform`, etc.).
+- **Version-pin** features to specific app releases to avoid showing stale entries to users on older versions.

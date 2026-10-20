@@ -1,0 +1,49 @@
+---
+title: The Banner & Toast
+---
+
+import { Callout } from 'nextra/components'
+import { BannerToastDemo } from '../../../components/demos/banner-toast-demo'
+
+# The Banner and Toast Components
+
+Use `<Banner>` for persistent high-visibility messages and `<Toast>` for lightweight transient notices.
+
+## Banner example
+
+```tsx filename="privacy-banner.tsx"
+<Banner
+  featureId="privacy-policy-update"
+  variant="warning"
+  dismissible
+  position="sticky"
+/>
+```
+
+## Toast example
+
+```tsx filename="launch-toast.tsx"
+<Toast
+  featureIds={['dark-mode-launch']}
+  autoDismissMs={5000}
+  maxVisible={1}
+  position="bottom-right"
+/>
+```
+
+## Common props
+
+| Component | Prop | Notes |
+| --- | --- | --- |
+| `Banner` | `featureId` | Required feature entry |
+| `Banner` | `variant`, `dismissible`, `position` | Behavior + style |
+| `Toast` | `featureIds` | Optional filter list |
+| `Toast` | `autoDismissMs`, `maxVisible`, `position` | Lifecycle + layout |
+
+<Callout type="tip">
+  Typical pattern: launch week banner + follow-up toast for lighter reminders.
+</Callout>
+
+## Interactive Demo
+
+<BannerToastDemo />

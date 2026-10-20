@@ -1,0 +1,52 @@
+---
+title: Feature Request Board
+---
+
+import { Callout } from 'nextra/components'
+import { FeatureRequestDemo } from '../../../components/demos/feature-request-demo'
+
+# Feature Request Components
+
+FeatureDrop provides two primitives:
+
+- `<FeatureRequestButton>`: vote button tied to a feature/request
+- `<FeatureRequestForm>`: submit + browse + vote request list
+
+## Usage
+
+```tsx filename="roadmap-input.tsx"
+import { FeatureRequestButton, FeatureRequestForm } from 'featuredrop/react'
+
+<FeatureRequestButton
+  featureId="usage-insights"
+  requestTitle="Advanced segmentation filters"
+  onVote={({ voted, request }) => console.log(voted, request.id)}
+/>
+
+<FeatureRequestForm
+  onSubmit={async (request) => {
+    await fetch('/api/feature-requests', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(request)
+    })
+  }}
+/>
+```
+
+## Key props
+
+| Component | Prop | Notes |
+| --- | --- | --- |
+| `FeatureRequestButton` | `featureId` | Required vote context |
+| `FeatureRequestButton` | `requestId` / `requestTitle` | Attach to existing/new request |
+| `FeatureRequestForm` | `onSubmit` / `onWebhook` | Sync hooks |
+| `FeatureRequestForm` | `categories`, `defaultSort` | Form/list behavior |
+
+<Callout type="info">
+  Requests are stored locally by default and can be mirrored to your backend through `onSubmit`/`onWebhook`.
+</Callout>
+
+## Interactive Demo
+
+<FeatureRequestDemo />

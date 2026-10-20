@@ -1,0 +1,65 @@
+---
+title: Troubleshooting Guide
+---
+
+import { Callout } from 'nextra/components'
+
+# Troubleshooting Guide
+
+Common integration issues and the fastest fixes.
+
+## Entries not showing
+
+If `<ChangelogWidget>`, `<Tour>`, `<Banner>`, or `<NewBadge>` render nothing:
+
+- Check required entry fields: `id`, `label`, `releasedAt`, `showNewUntil`.
+- Verify time gates: expired `showNewUntil` or future `publishAt` will hide entries.
+- If using `version`, confirm `FeatureDropProvider appVersion` satisfies constraints.
+- If using `audience`, confirm `userContext` matches entry `audience` rules.
+- If using `flagKey` or `product`, confirm bridge/scope is wired correctly.
+- If using `dependsOn`, verify prerequisite seen/clicked/dismissed state exists.
+
+<Callout type="info">
+  There is no `devMode` override. For local debugging, use a temporary manifest entry with a future `showNewUntil` and broad targeting.
+</Callout>
+
+## Spotlight / hotspot / tour placement issues
+
+- Ensure target elements exist before component mount.
+- Mount guided components after app shell/layout finishes rendering.
+- Check stacking context conflicts (`position`, `overflow`, `z-index`).
+- Tune z-index CSS variables if needed (for example `--featuredrop-z-index`, `--featuredrop-tour-z-index`).
+
+## Duplicate React instance errors
+
+Errors like `Invalid hook call` or `Cannot read properties of null (reading 'useRef')` usually mean multiple React copies are bundled.
+
+```ts filename="vite.config.ts"
+import path from 'node:path'
+
+export default {
+  resolve: {
+    alias: {
+      react: path.resolve('./node_modules/react'),
+      'react-dom': path.resolve('./node_modules/react-dom')
+    }
+  }
+}
+```
+
+## Remote sync mismatch across devices
+
+- Confirm your API implements `RemoteAdapter` contract endpoints (`GET /state`, `POST /dismiss`, `POST /dismiss-all`).
+- If using `HybridAdapter`, call `await storage.sync()` after auth/session restore.
+- Check for backend 5xx or auth failures causing remote retries/circuit-breaker behavior.
+
+## Build-time manifest failures
+
+```bash
+npx featuredrop validate --pattern "features/**/*.md"
+npx featuredrop doctor --pattern "features/**/*.md"
+```
+
+<Callout type="info">
+  If still blocked, open a GitHub issue with a minimal reproduction.
+</Callout>
